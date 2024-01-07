@@ -1,8 +1,13 @@
 {
-	"devDependencies": {
-		"eslint-config-prettier": "^9.1.0"
+	"name": "clicker-heroes-explorer",
+	"private": true,
+	"bin": {
+		"che": "bin/che.mjs"
 	},
 	"dependencies": {
 		"fflate": "^0.8.1"
+	},
+	"devDependencies": {
+		"eslint-config-prettier": "^9.1.0"
 	}
 }
