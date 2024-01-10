@@ -2,7 +2,7 @@ module.exports = {
 	root: true,
 	env: {
 		// browser: true,
-		es2021: true,
+		es2022: true,
 		node: true,
 		// webextensions: true,
 		// serviceworker: true,
@@ -10,7 +10,7 @@ module.exports = {
 	// Require: `npm install --save-dev eslint-config-prettier`.
 	extends: ['eslint:recommended', 'prettier'],
 	parserOptions: {
-		ecmaVersion: 12,
+		ecmaVersion: 13,
 		sourceType: 'module',
 	},
 	rules: {
