@@ -11,6 +11,11 @@ charset = utf-8
 indent_style = tab
 insert_final_newline = true
 
+# SvelteKit website
+
+[*.{svelte,html}]
+end_of_line = lf
+
 # Common
 
 [*.md]
@@ -23,11 +28,6 @@ end_of_line = lf
 
 [*.{js,mjs,cjs,jsx,ts,tsx}]
 end_of_line = lf
-
-[{bower.json,package.json,package-lock.json}]
-end_of_line = lf
-indent_style = space
-indent_size = 2
 
 # YAML
 
