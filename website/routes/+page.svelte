@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import { appName, appDesc } from '$lib/index.js';
+</script>
+
+<div class="container">
+	<h1>{appName}</h1>
+
+	<p>{appDesc}</p>
+</div>
