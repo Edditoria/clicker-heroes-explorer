@@ -1,5 +1,5 @@
 import { inflateSync, strFromU8 } from 'fflate';
-import { base64ToBytes } from '../vendor/base64.mjs';
+import { base64ToBytes } from './utils.mjs';
 
 /** @typedef {string} GameSaveStr The game save exported from Clicker Heroes game. */
 
