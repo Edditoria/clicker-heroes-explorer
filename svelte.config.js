@@ -14,6 +14,9 @@ const config = {
 			precompress: false,
 			strict: true,
 		}),
+		alias: {
+			$che: 'src',
+		},
 		files: {
 			assets: 'website/static',
 			hooks: {

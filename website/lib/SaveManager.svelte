@@ -12,7 +12,8 @@
 
 	function remove() {
 		GameSaveStore.remove();
-		console.log('[SaveManager:remove] Removed.', GameSaveStore.getShortStr());
+		textareaCtn = '';
+		console.log('[SaveManager:remove] Removed.', $GameSaveStore.shortCode);
 	}
 
 	onMount(() => {
