@@ -1,5 +1,6 @@
 <script>
 	import { appName, appDesc } from '$lib/index.js';
+	import MercenariesCurrent from '$lib/MercenariesCurrent.svelte';
 	import SaveManager from '$lib/SaveManager.svelte';
 </script>
 
@@ -12,5 +13,8 @@
 <main class="container">
 	<div>
 		<SaveManager />
+	</div>
+	<div>
+		<MercenariesCurrent />
 	</div>
 </main>
