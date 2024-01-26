@@ -40,9 +40,13 @@
 		return `${d} d ${h} h ${m} m`;
 	}
 
+	function sortMercs(mercsInSave) {
+		return Object.values(mercsInSave).sort((a, b) => b.level - a.level);
+	}
+
 	$: shouldShowTable = $GameSaveStore.data.hasOwnProperty('mercenaries') && $GameSaveStore.data.mercenaries.hasOwnProperty('mercenaries');
-	$: mercs = shouldShowTable && $GameSaveStore.data.mercenaries.mercenaries;
-	$: console.log('mercs:', mercs);
+	$: sortedMercs = shouldShowTable && sortMercs($GameSaveStore.data.mercenaries.mercenaries);
+	$: console.log('sortedMercs:', sortedMercs);
 </script>
 
 <h2>Mercenaries</h2>
@@ -53,7 +57,7 @@
 			<th>Slot</th><th>Info</th><th>Quest</th><th>Life</th>
 		</thead>
 		<tbody>
-			{#each Object.entries(mercs) as [_, merc]}
+			{#each sortedMercs as merc}
 				<tr>
 					<td>{+merc.slotId + 1}</td>
 					<td>
