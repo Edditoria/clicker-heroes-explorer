@@ -32,6 +32,18 @@
 		};
 	}
 
+	/** TODO: Verify position: Gold, Relic */
+	const questTypes = [
+		{ singular: '', plural: '' },
+		{ singular: 'New Mercenary', plural: 'New Mercenaries' },
+		{ singular: 'Gold', plural: 'Gold' },
+		{ singular: 'Hero Soul', plural: 'Hero Soul' },
+		{ singular: 'Relic', plural: 'Relics' },
+		{ singular: 'Skill Activation', plural: 'Skills Activation' },
+		{ singular: 'Ruby', plural: 'Rubies' },
+		{ singular: 'Clickmas Present', plural: 'Clickmas Presents' },
+	];
+
 	/** @param {number} sec */
 	function formatTimeInterval(sec) {
 		const d = Math.floor(sec / 86400);
@@ -44,6 +56,8 @@
 		return Object.values(mercsInSave).sort((a, b) => b.level - a.level);
 	}
 
+	$: saveTimestamp = $GameSaveStore.data.unixTimestamp; // Or prevLoginTimestamp?
+	$: console.log('Save time:', new Date(saveTimestamp).toLocaleString('sv'));
 	$: shouldShowTable = $GameSaveStore.data.hasOwnProperty('mercenaries') && $GameSaveStore.data.mercenaries.hasOwnProperty('mercenaries');
 	$: sortedMercs = shouldShowTable && sortMercs($GameSaveStore.data.mercenaries.mercenaries);
 	$: console.log('sortedMercs:', sortedMercs);
@@ -66,12 +80,27 @@
 						{getRarityName(merc.rarity)}
 					</td>
 					<td>
-						Start: {new Date(merc.lastQuestStartTime).toLocaleString('sv')}<br />
-						Duration: {formatTimeInterval(merc.lastQuestDuration)}
+						{#if merc.lastQuestRewardType > 0}
+							Type: {questTypes[merc.lastQuestRewardType].singular}<br />
+							Duration: {formatTimeInterval(merc.lastQuestDuration)}<br />
+							Start: {new Date(merc.lastQuestStartTime).toLocaleString('sv')}
+							<hr />
+							{#if merc.timeToDie - merc.lastQuestDuration > 0}
+								Complete: {new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}
+							{:else}
+								Die: {new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}<br />
+								Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
+								Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
+							{/if}
+						{:else}
+							No Quest
+						{/if}
 					</td>
 					<td>
 						Born: {new Date(merc.createTime).toLocaleString('sv')}<br />
 						Remaining: {formatTimeInterval(merc.timeToDie)} (pre-quest)
+						<hr />
+						Remaining: {formatTimeInterval(merc.timeToDie - merc.lastQuestDuration)} (post-quest)
 					</td>
 				</tr>
 			{/each}
