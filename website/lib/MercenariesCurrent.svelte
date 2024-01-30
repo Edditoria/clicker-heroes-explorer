@@ -32,7 +32,17 @@
 		};
 	}
 
-	/** TODO: Verify position: Gold, Relic */
+	/** TODO: Verify Hero Souls (1), Gold (2) */
+	const bonuses = [
+		{ assetId: 1, shortName: 'Hero Souls' },
+		{ assetId: 2, shortName: 'Gold' },
+		{ assetId: 3, shortName: 'Rubies' },
+		{ assetId: 4, shortName: 'Skills' },
+		{ assetId: 5, shortName: 'Extra Lives' },
+		{ assetId: 6, shortName: 'Recruit Speed' },
+	];
+
+	/** TODO: Verify position: Relic */
 	const questTypes = [
 		{ singular: '', plural: '' },
 		{ singular: 'New Mercenary', plural: 'New Mercenaries' },
@@ -77,7 +87,8 @@
 					<td>
 						{merc.name}<br />
 						{getMercenaryLevelInfo(merc.level).rank} (Lvl {merc.level})<br />
-						{getRarityName(merc.rarity)}
+						{getRarityName(merc.rarity)}<br />
+						Bonus: +{bonuses[merc.statId - 1].shortName}
 					</td>
 					<td>
 						{#if merc.lastQuestRewardType > 0}
