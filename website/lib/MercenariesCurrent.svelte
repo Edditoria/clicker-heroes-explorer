@@ -54,6 +54,36 @@
 		{ singular: 'Clickmas Present', plural: 'Clickmas Presents' },
 	];
 
+	function updateQuestStatus(merc) {
+		/** @type {number} */
+		const completeTimestamp = merc.lastQuestStartTime + merc.lastQuestDuration * 1000;
+		const nowTimestamp = new Date().getTime();
+		/** Time to die after quest. Merc is already dead during quest if negative */
+		const updatedTimeToDie = merc.timeToDie - merc.lastQuestDuration;
+
+		if (updatedTimeToDie > 0) {
+			// Will survive and complete the quest:
+			const countDownSec = Math.floor((completeTimestamp - nowTimestamp) / 1000);
+			if (nowTimestamp < completeTimestamp) {
+				// Still in quest:
+				return { status: 'Way to complete', action: formatTimeInterval(countDownSec) };
+			} else {
+				// Quest completed successfully:
+				return { status: 'Completed', action: 'Collect reward' };
+			}
+		} else {
+			// Die during quest:
+			const countDownSec = Math.floor((merc.lastQuestStartTime + merc.timeToDie * 1000 - nowTimestamp) / 1000);
+			if (nowTimestamp < completeTimestamp) {
+				// Still in quest:
+				return { status: 'Prepare to die', action: formatTimeInterval(countDownSec) };
+			} else {
+				// Already dead:
+				return { status: 'Failed', action: 'Revive or bury' };
+			}
+		}
+	}
+
 	/** @param {number} sec */
 	function formatTimeInterval(sec) {
 		const d = Math.floor(sec / 86400);
@@ -78,10 +108,11 @@
 {#if shouldShowTable}
 	<table>
 		<thead>
-			<th>Slot</th><th>Info</th><th>Quest</th><th>Life</th>
+			<th>Slot</th><th>Info</th><th>Action To Take</th><th>Quest</th><th>Life</th>
 		</thead>
 		<tbody>
 			{#each sortedMercs as merc}
+				{@const questStatus = updateQuestStatus(merc)}
 				<tr>
 					<td>{+merc.slotId + 1}</td>
 					<td>
@@ -89,6 +120,14 @@
 						{getMercenaryLevelInfo(merc.level).rank} (Lvl {merc.level})<br />
 						{getRarityName(merc.rarity)}<br />
 						Bonus: +{bonuses[merc.statId - 1].shortName}
+					</td>
+					<td>
+						{#if merc.lastQuestRewardType > 0}
+							{questStatus.status}<br />
+							{questStatus.action}
+						{:else}
+							Start a quest
+						{/if}
 					</td>
 					<td>
 						{#if merc.lastQuestRewardType > 0}
