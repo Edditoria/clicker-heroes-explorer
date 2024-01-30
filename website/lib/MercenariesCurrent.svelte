@@ -108,18 +108,20 @@
 {#if shouldShowTable}
 	<table>
 		<thead>
-			<th>Slot</th><th>Info</th><th>Action To Take</th><th>Quest</th><th>Life</th>
+			<th>Mercenary</th><th>Action To Take</th><th>Quest</th><th>Life</th>
 		</thead>
 		<tbody>
 			{#each sortedMercs as merc}
 				{@const questStatus = updateQuestStatus(merc)}
 				<tr>
-					<td>{+merc.slotId + 1}</td>
 					<td>
 						{merc.name}<br />
-						{getMercenaryLevelInfo(merc.level).rank} (Lvl {merc.level})<br />
+						{getMercenaryLevelInfo(merc.level).rank}<br />
 						{getRarityName(merc.rarity)}<br />
 						Bonus: +{bonuses[merc.statId - 1].shortName}
+						<hr />
+						Level: {merc.level} ({Math.floor(merc.experience * 100)}%)<br />
+						<progress value={merc.experience} max="1"></progress>
 					</td>
 					<td>
 						{#if merc.lastQuestRewardType > 0}
