@@ -111,7 +111,7 @@
 {#if shouldShowTable}
 	<table>
 		<thead>
-			<th>Mercenary</th><th>Action To Take</th><th>Quest</th><th>Life</th>
+			<th>Mercenary</th><th>Action</th><th>Reward</th><th>Quest</th><th>Life</th>
 		</thead>
 		<tbody>
 			{#each sortedMercs as merc}
@@ -135,10 +135,12 @@
 						{/if}
 					</td>
 					<td>
+						{questTypes[merc.lastQuestRewardType].singular}
+					</td>
+					<td>
 						{#if questStatus.status === 'Idle'}
 							No Quest
 						{:else}
-							Type: {questTypes[merc.lastQuestRewardType].singular}<br />
 							Duration: {formatTimeInterval(merc.lastQuestDuration)}<br />
 							Start: {new Date(merc.lastQuestStartTime).toLocaleString('sv')}
 							<hr />
