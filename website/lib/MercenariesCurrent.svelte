@@ -55,6 +55,9 @@
 	];
 
 	function updateQuestStatus(merc) {
+		if (merc.lastQuestRewardType === 0) {
+			return { status: 'Idle', action: 'Start a quest' }; // Early.
+		}
 		/** @type {number} */
 		const completeTimestamp = merc.lastQuestStartTime + merc.lastQuestDuration * 1000;
 		const nowTimestamp = new Date().getTime();
@@ -124,28 +127,28 @@
 						<progress value={merc.experience} max="1"></progress>
 					</td>
 					<td>
-						{#if merc.lastQuestRewardType > 0}
+						{#if questStatus.status === 'Idle'}
+							Start a quest
+						{:else}
 							{questStatus.status}<br />
 							{questStatus.action}
-						{:else}
-							Start a quest
 						{/if}
 					</td>
 					<td>
-						{#if merc.lastQuestRewardType > 0}
+						{#if questStatus.status === 'Idle'}
+							No Quest
+						{:else}
 							Type: {questTypes[merc.lastQuestRewardType].singular}<br />
 							Duration: {formatTimeInterval(merc.lastQuestDuration)}<br />
 							Start: {new Date(merc.lastQuestStartTime).toLocaleString('sv')}
 							<hr />
-							{#if merc.timeToDie - merc.lastQuestDuration > 0}
-								Complete: {new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}
-							{:else}
-								Die: {new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}<br />
-								Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
-								Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
-							{/if}
-						{:else}
-							No Quest
+						{/if}
+						{#if questStatus.status === 'Way to complete' || questStatus.status === 'Completed'}
+							Complete: {new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}
+						{:else if questStatus.status === 'Prepare to die' || questStatus.status === 'Failed'}
+							Die: {new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}<br />
+							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
+							Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
 						{/if}
 					</td>
 					<td>
