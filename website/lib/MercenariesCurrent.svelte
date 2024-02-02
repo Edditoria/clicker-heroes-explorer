@@ -56,7 +56,7 @@
 
 	function updateQuestStatus(merc) {
 		if (merc.lastQuestRewardType === 0) {
-			return { startedSecAgo: -1, status: 'Idle', action: 'Start a quest', countDownSec: 0 }; // Early.
+			return { startedSecAgo: -1, status: 'Idle', action: 'Start a quest', completeRate: 0, countDownSec: 0 }; // Early.
 		}
 		/** @type {number} */
 		const completeTimestamp = merc.lastQuestStartTime + merc.lastQuestDuration * 1000;
@@ -70,20 +70,23 @@
 			const countDownSec = Math.floor((completeTimestamp - nowTimestamp) / 1000);
 			if (nowTimestamp < completeTimestamp) {
 				// Still in quest:
-				return { startedSecAgo, status: 'Way to complete', action: formatTimeInterval(countDownSec), countDownSec };
+				const completeRate = Math.floor(((merc.lastQuestDuration - countDownSec) / merc.lastQuestDuration) * 100);
+				return { startedSecAgo, status: 'Way to complete', action: formatTimeInterval(countDownSec), completeRate, countDownSec };
 			} else {
 				// Quest completed successfully:
-				return { startedSecAgo, status: 'Completed', action: 'Collect reward', countDownSec };
+				return { startedSecAgo, status: 'Completed', action: 'Collect reward', completeRate: 100, countDownSec };
 			}
 		} else {
 			// Die during quest:
 			const countDownSec = Math.floor((merc.lastQuestStartTime + merc.timeToDie * 1000 - nowTimestamp) / 1000);
 			if (nowTimestamp < completeTimestamp) {
 				// Still in quest:
-				return { startedSecAgo, status: 'Prepare to die', action: formatTimeInterval(countDownSec), countDownSec };
+				const completeRate = Math.floor((merc.lastQuestDuration - countDownSec) / merc.lastQuestDuration);
+				return { startedSecAgo, status: 'Prepare to die', action: formatTimeInterval(countDownSec), completeRate, countDownSec };
 			} else {
 				// Already dead:
-				return { startedSecAgo, status: 'Failed', action: 'Revive or bury', countDownSec };
+				const completeRate = Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100);
+				return { startedSecAgo, status: 'Failed', action: 'Revive or bury', completeRate, countDownSec };
 			}
 		}
 	}
@@ -140,25 +143,30 @@
 						{:else if questStatus.status === 'Failed'}
 							{questStatus.action}<br />
 							<hr />
-							{questStatus.status}<br />
+							{questStatus.status}
+							{questStatus.completeRate}%<br />
+							<progress value={questStatus.completeRate} max="100"></progress>
 							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
 								{formatTimeInterval(questStatus.countDownSec * -1)} ago
 							</span>
 							<hr />
-							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
-							Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
+							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}
 						{:else if questStatus.status === 'Way to complete'}
-							{questStatus.status}:
+							{questStatus.status}
+							{questStatus.completeRate}%<br />
+							<progress value={questStatus.completeRate} max="100"></progress>
 							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}>
 								{formatTimeInterval(questStatus.countDownSec)} later
 							</span>
 						{:else if questStatus.status === 'Prepare to die'}
+							{questStatus.status}
+							{questStatus.completeRate}%
+							<progress value={questStatus.completeRate} max="100"></progress>
 							To die:
 							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
 								{formatTimeInterval(questStatus.countDownSec)} later
 							</span><br />
 							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
-							Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
 						{:else}
 							{questStatus.status}<br />
 							{questStatus.action}
