@@ -142,34 +142,34 @@
 							</span>
 						{:else if questStatus.status === 'Failed'}
 							{questStatus.action}<br />
+							Way to go: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}
 							<hr />
 							{questStatus.status}
-							{questStatus.completeRate}%<br />
+							{questStatus.completeRate}%
 							<progress value={questStatus.completeRate} max="100"></progress>
 							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
 								{formatTimeInterval(questStatus.countDownSec * -1)} ago
 							</span>
-							<hr />
-							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}
 						{:else if questStatus.status === 'Way to complete'}
-							{questStatus.status}
-							{questStatus.completeRate}%<br />
-							<progress value={questStatus.completeRate} max="100"></progress>
 							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}>
-								{formatTimeInterval(questStatus.countDownSec)} later
+								{questStatus.action}
 							</span>
-						{:else if questStatus.status === 'Prepare to die'}
+							<br />
 							{questStatus.status}
 							{questStatus.completeRate}%
 							<progress value={questStatus.completeRate} max="100"></progress>
-							To die:
+						{:else if questStatus.status === 'Prepare to die'}
 							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
-								{formatTimeInterval(questStatus.countDownSec)} later
-							</span><br />
-							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
+								{questStatus.action}
+							</span>
+							<br />
+							{questStatus.status}
+							{questStatus.completeRate}%
+							<progress value={questStatus.completeRate} max="100"></progress>
 						{:else}
 							{questStatus.status}<br />
 							{questStatus.action}
+							{console.error('Unknown error in UI: questStatus:', questStatus)}
 						{/if}
 					</td>
 					<td>
