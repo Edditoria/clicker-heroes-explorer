@@ -130,6 +130,35 @@
 					<td>
 						{#if questStatus.status === 'Idle'}
 							Start a quest
+						{:else if questStatus.status === 'Completed'}
+							{questStatus.action}
+							<hr />
+							{questStatus.status}<br />
+							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}>
+								{formatTimeInterval(questStatus.countDownSec * -1)} ago
+							</span>
+						{:else if questStatus.status === 'Failed'}
+							{questStatus.action}<br />
+							<hr />
+							{questStatus.status}<br />
+							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
+								{formatTimeInterval(questStatus.countDownSec * -1)} ago
+							</span>
+							<hr />
+							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
+							Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
+						{:else if questStatus.status === 'Way to complete'}
+							{questStatus.status}:
+							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}>
+								{formatTimeInterval(questStatus.countDownSec)} later
+							</span>
+						{:else if questStatus.status === 'Prepare to die'}
+							To die:
+							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
+								{formatTimeInterval(questStatus.countDownSec)} later
+							</span><br />
+							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
+							Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
 						{:else}
 							{questStatus.status}<br />
 							{questStatus.action}
@@ -147,32 +176,6 @@
 							<span data-tooltip={new Date(merc.lastQuestStartTime).toLocaleString('sv')}>
 								{formatTimeInterval(questStatus.startedSecAgo)} ago
 							</span>
-							<hr />
-						{/if}
-						{#if questStatus.status === 'Way to complete'}
-							{questStatus.status}:
-							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}>
-								{formatTimeInterval(questStatus.countDownSec)} later
-							</span>
-						{:else if questStatus.status === 'Completed'}
-							{questStatus.status}:
-							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.lastQuestDuration * 1000).toLocaleString('sv')}>
-								{formatTimeInterval(questStatus.countDownSec * -1)} ago
-							</span>
-						{:else if questStatus.status === 'Prepare to die'}
-							To die:
-							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
-								{formatTimeInterval(questStatus.countDownSec)} later
-							</span><br />
-						{:else if questStatus.status === 'Failed'}
-							Dead:
-							<span data-tooltip={new Date(merc.lastQuestStartTime + merc.timeToDie * 1000).toLocaleString('sv')}>
-								{formatTimeInterval(questStatus.countDownSec * -1)} ago
-							</span><br />
-						{/if}
-						{#if questStatus.status === 'Preparing to die' || questStatus.status === 'Failed'}
-							Time-to-complete: {formatTimeInterval(merc.lastQuestDuration - merc.timeToDie)}<br />
-							Completion rate: {Math.floor((merc.timeToDie / merc.lastQuestDuration) * 100)}%
 						{/if}
 					</td>
 					<td>
